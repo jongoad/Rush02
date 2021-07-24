@@ -8,7 +8,11 @@ STEP 00: MAKE SURE THE NUM IS A GOOD NUMMY BOY
 
     - Check that the input number from argv is a valid unsigned int. If there is more than one argument,
       make sure to to check the second argument instead.
-    - If the inputted number is not valid, output should be "Error" followed by newline.  
+    - If the inputted number is not valid, output should be "Error" followed by newline.
+
+    Required Functions:
+
+    - is_arg_nbr_valid
 
 STEP 01: PARSE THE DICC & MAKE SURE THE DICC IS A GOOD DICC
 
@@ -16,38 +20,87 @@ STEP 01: PARSE THE DICC & MAKE SURE THE DICC IS A GOOD DICC
     - If the parsing functions get to the end of the document (marked by EOF char) then return a status that
       the parse has been succesful.
 
+    Required Functions:
+
+    - open
+    - read
+    - is_dict_valid
+
 STEP 02: READ THE DICC AND FIND THE GOOD STUFF
 
     - Now that the dictionary has been check we need to pull data from the file into our program.
-                        OPEN AND READ
-
     - ft_split will be necessary to take each line and split it into two seperate arrays.
-                        FT_SPLIT
-
     - The first array will need to be an int array to hold the key numbers for each string.
         - The key numbers will be intially represented by char strings, so we need to convert them into 
           integers in order to use them easily.
-                        ATOI
-                        
     - The second array will need to be a pointer array pointing to the strings that match each key.
             - Index matching between these two arrays will be a challenge, we will have to use adresses and pointers.
     - We will need to run a number of malloc operations in order to allocate memory for all of the arrays.
-                        MALLOC
+                       
+    Required Functions:
+
+    - ft_split
+    - ft_atoi
+    - malloc
+    - close
 
 STEP 03: SORT THE GOOD STUFF TO MAKE MORE EASY THE STRINGING OF THE STRING
 
     - Now that all of the key numbers and corresponding strings have been stored in arrays, we need to sort them in 
       ascending order based on key number.
     - This will make it much easier to access the correct strings when we go to print out the number.
-    - A simple bubble sort should be good enough for sorting, however every time a key number is mived
+    - A simple bubble sort should be good enough for sorting, however every time a key number is moved we need to also
+      change the order of the pointers in the pointer to string array that holds our strings.
+
+    Required Functions:
+
+    - ft_sort
 
 STEP 04: CONVERT THE DIGITAL DIGITS INTO THE STRINGY THINGY
 
-    - 
+    - We now have all of the information we need to write our string.
+    - First the string needs to be broken down or converted into smaller chunks that match up with keys.
+    - Then the number "chunks" need to be checked against the key array to ensure that we are able to write the
+      inputted number with the keys we have available. If not, output "Dict Error" followed by a newline.
+    - If it is possible to write out the number with the available keys, we need to create a 1d char array
+      to hold the output string.
+    - Then we need to translate the number "chunks" 1 at a time from left to right (largest to smallest),
+      writing the string held in the key reference to the array for each chunk.
+    
+    Required Functions:
 
-STEP 05: ????????????
+    - ft_strjoin (Maybe??) - Can probably just manually add spaces in the write loop?
+    - nbr_to_array - Function to convert an integer to an array containing the digits it contains
+    - nbr_to_magnitude - Function that works along side nbr_to_array that stores the magnitude of each digit
+    - put_written_nbr - Function to take each digit and it's magnitude and write the appropriate strings to our char array
+    - malloc
 
-STEP 06: PROFIT
+STEP 05: MAKE THE STRINGY THINGY GOT BLEEEP BLOOOP ON THE BLACK SCREEN WITH WHITE LETTERS
+
+    - Now that the string has been created and stored in a char array, we can simply use ft_putstring/ft_putchar to
+      write it to the standar output.
+    
+    Required Functions:
+
+    - write
+    - ft_putchar
+    - ft_putstr
+
+STEP 06: SWEEP THE DIRTY MEMMY MEMS INTO THE TRASH SO THE ROOM IS ALL CLEAN AND SPARKLY
+
+    - Before the program exits we need to free all allocated memory.
+
+    Required Functions:
+
+    - free
+
+STEP 07: ????????????
+
+    - BEHAVIOUR UNDEFINED
+
+STEP 08: PROFIT
+
+    - THIS IS WHERE WE GET ALL THE SWEET POINTS AND PERCENTS AND STUFF..... OR MAYBE GET NOTHING.
 
 ___________________________________________________________________________________________________________________
 FUNCTIONS (THAT WE WILL WRITE IN ORDER TO DO THE THING)

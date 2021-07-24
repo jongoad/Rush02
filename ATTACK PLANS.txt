@@ -4,15 +4,46 @@ ________________________________________________________________________________
 THE PLANS (TO DO THE THING)
 ___________________________________________________________________________________________________________________
 
-STEP 01: PARSE THE DICC
+STEP 00: MAKE SURE THE NUM IS A GOOD NUMMY BOY
 
-STEP 02: MAKE SURE THE DICC IS A GOOD DICC
+    - Check that the input number from argv is a valid unsigned int. If there is more than one argument,
+      make sure to to check the second argument instead.
+    - If the inputted number is not valid, output should be "Error" followed by newline.  
 
-STEP 03: READ THE DICC AND FIND THE GOOD STUFF
+STEP 01: PARSE THE DICC & MAKE SURE THE DICC IS A GOOD DICC
 
-STEP 04: REMEMBER THE GOOD STUFF FOR LATER USING
+    - Go through the dictionary and check it line by line to ensure that is follows all of the prescribe rules.
+    - If the parsing functions get to the end of the document (marked by EOF char) then return a status that
+      the parse has been succesful.
+
+STEP 02: READ THE DICC AND FIND THE GOOD STUFF
+
+    - Now that the dictionary has been check we need to pull data from the file into our program.
+                        OPEN AND READ
+
+    - ft_split will be necessary to take each line and split it into two seperate arrays.
+                        FT_SPLIT
+
+    - The first array will need to be an int array to hold the key numbers for each string.
+        - The key numbers will be intially represented by char strings, so we need to convert them into 
+          integers in order to use them easily.
+                        ATOI
+                        
+    - The second array will need to be a pointer array pointing to the strings that match each key.
+            - Index matching between these two arrays will be a challenge, we will have to use adresses and pointers.
+    - We will need to run a number of malloc operations in order to allocate memory for all of the arrays.
+                        MALLOC
+
+STEP 03: SORT THE GOOD STUFF TO MAKE MORE EASY THE STRINGING OF THE STRING
+
+    - Now that all of the key numbers and corresponding strings have been stored in arrays, we need to sort them in 
+      ascending order based on key number.
+    - This will make it much easier to access the correct strings when we go to print out the number.
+    - A simple bubble sort should be good enough for sorting, however every time a key number is mived
 
 STEP 04: CONVERT THE DIGITAL DIGITS INTO THE STRINGY THINGY
+
+    - 
 
 STEP 05: ????????????
 
@@ -22,8 +53,22 @@ ________________________________________________________________________________
 FUNCTIONS (THAT WE WILL WRITE IN ORDER TO DO THE THING)
 ___________________________________________________________________________________________________________________
 
+FT_FUNCTION LIST:
 
-dsd
+    ft_split - We will need this to manipulate the text file and turn it into a useful format
+    ft_putchar - We need this because DUHHHHHH
+    ft_putstr - Do I need to explain why we need this?
+
+CUSTOM FUNCTION LIST:
+
+    is_arg_nbr_valid - Check if the number passed in command line to be translated is a valid unsigned int
+                     - If it is not valid, return Error followed by newline
+
+    is_arg_dict_valid - If more than one argument is passed, check if the first argument is valid as a reference dictionary
+    
+    is_dict_valid - Check if the dictionary follows all of the prescribed rules, return "Dict Error \n" if not
+    
+
 ___________________________________________________________________________________________________________________
 OTHER STUFF THAT THE THING NEEDS TO BE ATTACKED
 ___________________________________________________________________________________________________________________
@@ -33,3 +78,5 @@ ________________________________________________________________________________
 ___________________________________________________________________________________________________________________
 NOTES (ABOUT DOING THE THING)
 ___________________________________________________________________________________________________________________
+
+- All memory that is allocated must be freed properly before the program finishes executing.

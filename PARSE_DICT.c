@@ -25,23 +25,77 @@ This is because 0, 1, and 2 are reserved.
 - 2 is write to error
 */
 
+/****************************************************************************************************************************/
 
-//WHAT THE FUCK IS THIS ?
+//Not sure if we need/want to use this? I think it stores the current error code to be returned
 extern int errno;
 
 int parse_main()
 {
-    //Create an int that will holdthe file descriptor
-    //Declare FILE pointer ??
-    int fd;
-
-    fd = open("numbers.dict", O_RDONLY);
-
-
-    close(fd);
+ 
 }
 
+// Function to find the size of the file so we can malloc the correct size memory block.
+int get_file_size(int fd)
+{
+    int count; //File size counter
+    int fd; //File descriptor
+    int read_status; //Loop control usinf return value from read
+    char    c; //Temporary buffer to hold read bytes in local memory
 
+    count = 0;
+    read_status = 1;
+
+    //Create the memory location for buffer
+    c = (char)malloc(sizeof(char));
+
+    //Open the file
+    fd = open("numbers.dict", O_RDONLY);
+
+    //Read one byte at a time till we hit the EOF char or return an error
+    while (read_status > 0)
+    {
+        read_status = read(fd, c, 1);
+        if (read_status > 0)
+            count++;
+    }
+    //Free the allocated memory
+    free(c);
+
+    //Return error or size of file
+    if (read_status == -1)
+        return (-1);
+    else
+        return (count);
+}
+
+//Function to read the file and store it in a malloc-ed char array
+char *file_to_string(void)
+{
+   //Create an int that will hold the file descriptor
+    int fd;
+    int read_status;
+    char *str;
+
+    read_status = 1;
+
+    //Allocate a memory block large enough to hold read output, including an extra byte for null terminator.
+    str = (char *)malloc(sizeof(char) * (get_file_size() + 1));
+    //Open the file
+    fd = open("numbers.dict", O_RDONLY);
+
+    //Start reading the file 1 byte at a time until the return from read() is 0 (end of file) or an error is returned (-1)
+    //Returns above 0 are the number of bytes read
+    while (read_status > 0)
+    {
+        read_status = read(fd, str, 1);
+    }
+    //Free the allocated memory
+    free(str);
+    close(fd);
+
+
+}
 
 
 

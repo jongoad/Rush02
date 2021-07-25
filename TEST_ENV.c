@@ -79,10 +79,10 @@ char *file_to_string(void)
         return (str);
 }
 
-int main(void)
+int main(int argc, char **argv)
 {
     char *str;
-
+    
     str = file_to_string();
 
     printf("%s", str);

@@ -62,11 +62,11 @@ char *file_to_string(void)
     //Open the file
     fd = open("numbers.dict", O_RDONLY);
 
-    //Start reading the file 1 byte at a time until the return from read() is 0 (end of file) or an error is returned (-1)
+    //Read size bytes from the file to our string.
     //Returns above 0 are the number of bytes read
     status = read(fd, str, size);
    
-    //Null terminate the string
+    //Null terminate the string at last byte
     str[size] = '\0';
 
     //Close the file
@@ -82,7 +82,7 @@ char *file_to_string(void)
 int main(int argc, char **argv)
 {
     char *str;
-    
+
     str = file_to_string();
 
     printf("%s", str);

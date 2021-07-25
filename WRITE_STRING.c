@@ -29,15 +29,33 @@ void    write_output(char **output, char *string, unsigned int key)
 }
 
 //Function to write triplets
-unsigned int    write_triplets(char **output, int triplet_value, unsigned int mag)
+void	write_triplets(int nb)
 {
     // Need to pass in the digits from out triplet one at time
     //First one is triplet_value div 100
     //Second one is result of first div 10
     //Third is result of second mod 10
-
-    mag = mag / 1000;
-    return (mag);
+	int	hundreds;
+	int	tens;
+	int	units;
+	
+	hundreds = nb / 100;
+	tens = (nb % 100) / 10;
+	units = nb % 10;
+	if (hundreds)
+	{
+		pull_string(nb/100);
+		pull_string(100);
+	}
+	if (tens < 21 && nb % 100 != 0)
+	{
+		pull_string(nb % 100);
+		return ;
+	}
+	else if (tens)
+		pull_string(tens);
+	if (units)
+		pull_string(units);
 }
 
 

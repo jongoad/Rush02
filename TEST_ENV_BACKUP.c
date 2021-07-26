@@ -9,7 +9,6 @@
 
 //TEMP UNTIL HEADER IS MADE
 #include "FT_BASIC.c"
-int	check_dict(char *str);
 
 //Need a struct to start passing information around
 struct data {
@@ -55,6 +54,7 @@ int get_file_size(void)
 
     //Close the file
     status = close(fd);
+
     //Return error or size of file
     if (status == -1 || fd == -1)
         return (-1);
@@ -63,7 +63,7 @@ int get_file_size(void)
 }
 
 //Function to read the file and store it in a malloc-ed char array
-int file_to_string(void)
+void file_to_string(void)
 {
    //Create an int that will hold the file descriptor
     int fd;
@@ -89,46 +89,13 @@ int file_to_string(void)
 
     //Close the file
     status = close(fd);
+
     //Need to handle error reporting. We can return a null string on error. Might need to split open and close into seperate functions that return fd
     if (status == -1 || fd == -1)
-       return (-1);
-   else
-        return (1);
+        return (NULL);
+    else
+        return;
 }
-
-//This function is to strip away any entire empty lines
-char *remove_empty_lines(char *str)
-{
-    int i;
-    int j;
-    char *temp_str;
-    int size;
-    int found_line;
-
-    size = get_file_size();
-    temp_str = (char *)malloc(sizeof(char) * (size + 1));
-    found_line = 0;
-    i = 0;
-    while (str[i] != '\0')
-    {
-        j = 0;
-        temp_str[i] = str[i + found_line];
-        //While consecutive white space, if we hit the newline char we need to start copying again from new location
-        while(str[i + j + found_line] == ' ')
-        {
-            j++;
-        }
-        if (str[i + j + found_line] == '\n')
-        {
-            if (str[i + j + found_line + 1] == '\n')
-                str[i + j + found_line + 1] = ' ';
-            found_line = j + found_line;
-        }
-        i++;
-    }
-    return (temp_str);
-}
-
 
 /***************************************************************************************************/
 /*          CHECK COMMAND LINE INPUT, GET PROPER DICTIONARY, CONVERT INPUT NUMBER TO INT           */
@@ -161,10 +128,13 @@ int   is_valid_atoi(char *argv)
     }
 }
 
+
 //This function checks the command line input, and checks for a new dictionary being passed
 int arg_check(int argc,char **argv)
 {
     int nbr_check;
+    int dict_check;
+
 
     //If 2 arguments are passed we need to check number and dict
     //The path for the new dict is passed into the info struct
@@ -172,26 +142,68 @@ int arg_check(int argc,char **argv)
     {
         nbr_check = is_valid_atoi(argv[2]);
         ft_strcpy(info.file_path, argv[1]);
+        dict_check = check_dict();
     }
     //If only one argument is passed we simply check the number and the original dict
     else if (argc == 2)
     {
         nbr_check = is_valid_atoi(argv[1]);
         ft_strcpy(info.file_path, "numbers.dict");
+        dict_check = 1;
     }
     //If there is no number or dict passed we return an error
     else if (argc == 1)
         return (-1);
-    return (nbr_check);
+    
+    //Return -1 for number error
+    if (nbr_check == -1)
+        return (-1);
+    //Return -2 for dict error
+    else if (dict_check == -1)
+        return (-2);
+    //Return 1 if there is a valid reference dictionary and number
+    else if (dict_check == 1 && argc == 3)
+        return (1);
+    //Return 0 if there is only a number and original dictionary is valid
+    else if (dict_check == 1 && argc == 2)
+        return (0);
+    else
+        return (-1);
 }
 
-//This function checks that the current dictionary is valid
-int confirm_valid_dict(void)
-{
-    int dict_check;
 
-    dict_check = check_dict(info.dict_input);
-    return (dict_check);
+//This function is to strip away any entire empty lines
+char *remove_empty_lines(char *str)
+{
+    int i;
+    int j;
+    char *temp_str;
+    int size;
+    int found_line;
+
+    size = get_file_size();
+    temp_str = (char *)malloc(sizeof(char) * (size + 1));
+    found_line = 0;
+    i = 0;
+    while (str[i] != '\0')
+    {
+        j = 0;
+        temp_str[i] = str[i + found_line];
+        //While consecutive white space, if we hit the newline char we need to start copying again from new location
+        while(str[i + j + found_line] == ' ')
+        {
+            j++;
+        }
+        if (str[i + j + found_line] == '\n')
+        {
+            if (str[i + j + found_line + 1] == '\n')
+                str[i + j + found_line + 1] = ' ';
+            found_line = j + found_line;
+        }
+        i++;
+    }
+    free(str);
+    return (temp_str);
 }
 
 /***************************************************************************************************/
@@ -352,7 +364,6 @@ int	check_dict(char *str)
 
 
 //Function to iterate through triplet array and call for prints based on order of magnitude
-/*
 void    control_print(void)
 {
     int i;
@@ -377,7 +388,7 @@ void    control_print(void)
     }
     return;
 }
-*/
+
 
 
 //If there is an error, arg_check will return -1
@@ -386,14 +397,13 @@ void    control_print(void)
 int main(int argc, char **argv)
 {
     int arg_status;
-    int error_status;
-    int dict_error;
-  
+    char *str;
+
+    //Call a function to check the validity of arguments, as well as telling us if we need to check a command line dictionary
     arg_status = arg_check(argc, argv);
-    error_status = file_to_string();
-    dict_error = confirm_valid_dict();
-    info.dict_input = remove_empty_lines(info.dict_input);
-    if (dict_error == 0)
+    file_to_string();
+    str = remove_empty_lines(str);
+    if (arg_status == -2)
         printf("Dict Error\n");
     else if (arg_status == -1)
         printf("Error\n");
@@ -401,8 +411,11 @@ int main(int argc, char **argv)
         printf("Valid number: %u\n", info.nbr);
     else if(arg_status == 1)
         printf("Valid number: %u\nReference dictionary path is now: %s\n", info.nbr, info.file_path);
-    printf("Here is the current dictionary:\n %s", info.dict_input);
+    printf("Here is the current dictionary:\n %s", str);
+
     control_triplets();
+
+
 
     return (0);
 }

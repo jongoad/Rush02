@@ -26,7 +26,6 @@ unsigned int    get_magnitude(unsigned int nbr)
 }
 
 //Function to convert the number into triplets and write to an array
-//Maximum number of triplets is 4 for unsigned int
 void    convert_triplets(unsigned int  nbr, unsigned int   mag, int *triplets)
 {
     int i;

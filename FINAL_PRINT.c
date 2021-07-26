@@ -12,7 +12,7 @@ void	pull_string(int key)
 			ft_putstr(dict.strs[i]);
 			return ;
 		}
-		i++;	
+		i++;
 	}
 }
 
@@ -20,7 +20,7 @@ int	write_triplets(int nb)
 {
 	if (nb / 100)
 	{
-		pull_string(nb/100);
+		pull_string(nb / 100);
 		ft_putchar(' ');
 		pull_string(100);
 	}
@@ -43,12 +43,12 @@ int	write_triplets(int nb)
 	return (nb);
 }
 
-void    control_print(void)
+void	control_print(void)
 {
-	int i;
-	int triplet_value;
-	unsigned int local_mag;
-	int no_print;
+	int				i;
+	int				triplet_value;
+	int				no_print;
+	unsigned int	local_mag;
 
 	i = 0;
 	local_mag = info.mag;
@@ -57,21 +57,21 @@ void    control_print(void)
 		triplet_value = info.triplets[i];
 		no_print = write_triplets(triplet_value);
 		if (local_mag != 1 && no_print != 0)
-			{
-				ft_putchar(' ');
-				pull_string(local_mag);
-				ft_putchar(' ');
-			}
+		{
+			ft_putchar(' ');
+			pull_string(local_mag);
+			ft_putchar(' ');
+		}
 		else if (local_mag == 1)
-			break;
+			break ;
 		local_mag = (local_mag / 1000);
 		i++;
 	}
 	ft_putchar(10);
-	return;
+	return ;
 }
 
-void    free_memory(void)
+void	free_memory(void)
 {
 	free(info.dict_input);
 	free(info.no_spaces);

@@ -1,9 +1,10 @@
 #include <BIGHEADBOY.h>
 
-
 void	fill_keys(void)
 {
-	int i = 0;
+	int	i;
+
+	i = 0;
 	while (i < 20)
 	{
 		dict.keys[i] = i;
@@ -22,7 +23,7 @@ void	fill_keys(void)
 void	fill_number(int nb, char *str)
 {
 	int	i;
-	
+
 	i = 0;
 	while (i < 32)
 	{
@@ -44,9 +45,9 @@ void	fill_number(int nb, char *str)
 
 void	parse_entries(char *str)
 {
-	int 	key;
-	int		str_size;
-	
+	int	key;
+	int	str_size;
+
 	while (str)
 	{
 		key = get_key(&str);
@@ -55,7 +56,7 @@ void	parse_entries(char *str)
 		info.entry = get_string(&str);
 		info.entry[str_size] = 0;
 		if (key == 0)
-		fill_number(key, info.entry);
+			fill_number(key, info.entry);
 		if (*(str + 3) == 0)
 			return ;
 	}

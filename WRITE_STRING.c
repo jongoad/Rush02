@@ -13,9 +13,20 @@ struct data {
 
 
 //Function to find keys and return strings
-char *pull_string(unsigned int key)
+void	pull_string(int key)
 {
+	int	i;
 
+	i = 0;
+	while (i < 32)
+	{
+		if (key == dict.keys[i])
+		{
+			ft_putstr(dict.strs[i]);
+			return ;
+		}
+		i++;	
+	}
 }
 
 void    write_output(char **output, unsigned int key)
@@ -43,27 +54,31 @@ void	write_triplets(int nb)
     //First one is triplet_value div 100
     //Second one is result of first div 10
     //Third is result of second mod 10
-	int	hundreds;
 	int	tens;
-	int	units;
 	
-	hundreds = nb / 100;
 	tens = (nb % 100) / 10;
-	units = nb % 10;
-	if (hundreds)
+	if (nb / 100)
 	{
 		pull_string(nb/100);
+		ft_putchar(' ');
 		pull_string(100);
 	}
 	if (tens < 21 && nb % 100 != 0)
 	{
+		ft_putchar(' ');
 		pull_string(nb % 100);
 		return ;
 	}
 	else if (tens)
+	{
+		ft_putchar(' ');
 		pull_string(tens);
-	if (units)
+	}
+	if (nb % 10)
+	{
+		ft_putchar(' ');
 		pull_string(units);
+	}
 }
 
 //Function to iterate through triplet array and call for prints based on order of magnitude

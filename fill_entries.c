@@ -13,7 +13,7 @@ struct	s_entries
 {
 	int		size;
 	int 	keys[32];
-	char	*strs[32];
+	char	*strs[33];
 } dict;
 
 void    ft_putchar(char c)
@@ -57,7 +57,7 @@ int	main(void)
 {
 	fill_keys();
 //	printf("%s\n", dict.strs[4]);
-	char *dictionary = "0: zero\n 1: one\n2: two\n3: three\n4: four\n5: five\n6: six\n7: seven TEST TEST \n8: eight\n9: nine\n10: ten\n11: eleven\n12: twelve\n13: thirteen\n14: fourteen\n15: fifteen\n16: sixteen\n17: seventeen\n18: eighteen\n19: nineteen\n20: twenty\n30: thirty\n40: forty\n50: fifty\n60: sixty\n70: seventy\n80: eighty\n90: ninety\n100: hundred\n1000: thousand\n1000000: million\n1000000000: billion\n";
+	char *dictionary = "55: test\n35:test35\n\n0: potato\n 1: one\n2: two\n3: three\n4: four\n5: five\n6: six\n7: seven TEST TEST \n8: eight\n9: nine\n10: ten\n11: eleven\n12: twelve\n13: thirteen\n14: fourteen\n15: fifteen\n16: sixteen\n17: seventeen\n18: eighteen\n19: nineteen\n20: twenty\n30: thirty\n40: forty\n50: fifty\n60: sixty\n70: seventy\n80: eighty\n90: ninety\n100: hundred\n1000: thousand\n1000000: million\n1000000000: billion\n";
 
 
 	parse_entries(dictionary);
@@ -89,13 +89,13 @@ void	fill_number(int nb, char *str)
 {
 	int	i;
 	
-	i = 0;
-	while (i < 32)
+	i = 1;
+	while (i < 33)
 	{
 		if (nb == 0)
 		{
-	//		dict.strs[i] = (char *)malloc(5 * sizeof(char));
-	//		ft_strcpy (dict.strs[i], "zero");
+//			dict.strs[i] = (char *)malloc(5 * sizeof(char));
+//			ft_strcpy (dict.strs[i], "zero");
 			dict.strs[i] = (char *)malloc((ft_strlen(str + 1)) * sizeof(char));
 			ft_strcpy (dict.strs[i], str);
 			return ;
@@ -125,8 +125,8 @@ void	parse_entries(char *str)
 		entry = get_string(&str);
 		entry[str_size] = 0;
 	//		printf("The string associated is: '%s'\n\n",entry);
-		if (key == 0)
-			printf("entry for zero = %s\n", entry);
+//		if (key == 0)
+//			printf("entry for zero = %s\n", entry);
 		fill_number(key, entry);
 		if (*(str + 3) == 0)
 			return ;

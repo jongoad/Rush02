@@ -1,9 +1,9 @@
 #include <BIGHEADBOY.h>
 
-int   is_valid_atoi(char *argv)
+int	is_valid_atoi(char *argv)
 {
-	unsigned long   nbr;
-	int i;
+	unsigned long	nbr;
+	int				i;
 
 	i = 0;
 	nbr = 0;
@@ -23,9 +23,9 @@ int   is_valid_atoi(char *argv)
 	}
 }
 
-int arg_check(int argc,char **argv)
+int	arg_check(int argc, char **argv)
 {
-	int nbr_check;
+	int	nbr_check;
 
 	if (argc == 3)
 	{
@@ -42,9 +42,9 @@ int arg_check(int argc,char **argv)
 	return (nbr_check);
 }
 
-int confirm_valid_dict(void)
+int	confirm_valid_dict(void)
 {
-	int dict_check;
+	int	dict_check;
 
 	dict_check = check_dict(info.dict_input);
 	return (dict_check);

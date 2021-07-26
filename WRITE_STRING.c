@@ -37,21 +37,12 @@ void    write_output(char **output, unsigned int key)
 
 
 //Function to write triplets
-<<<<<<< HEAD
-unsigned int    write_triplets(int triplet_value);
-=======
 void	write_triplets(int nb)
->>>>>>> 8e0cf6b87416700d1562445015507a0eb2b32c24
 {
     // Need to pass in the digits from out triplet one at time
     //First one is triplet_value div 100
     //Second one is result of first div 10
     //Third is result of second mod 10
-<<<<<<< HEAD
-
-
-    return (mag);
-=======
 	int	hundreds;
 	int	tens;
 	int	units;
@@ -73,7 +64,6 @@ void	write_triplets(int nb)
 		pull_string(tens);
 	if (units)
 		pull_string(units);
->>>>>>> 8e0cf6b87416700d1562445015507a0eb2b32c24
 }
 
 //Function to iterate through triplet array and call for prints based on order of magnitude

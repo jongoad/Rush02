@@ -1,5 +1,35 @@
-#include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <stdio.h>
+void	fill_number(int nb, char *str);
+void	fill_keys(void);
+void	parse_entries(char *str);
+int		is_string_valid(char *str);
+int 	get_key(char **str);
+char	*get_string(char **str);
+
+
+struct	s_entries
+{
+	int		size;
+	int 	keys[32];
+	char	*strs[32];
+} dict;
+
+void    ft_putchar(char c)
+{
+    write(1, &c, 1);
+}
+
+void	ft_strcpy(char *dest, char *src)
+{
+	int	i;
+
+	i = -1;
+	while (src[++i])
+		dest[i] = src[i];
+	dest[i] = 0;
+}
 
 int ft_strlen(char *str)
 {
@@ -11,170 +41,94 @@ int ft_strlen(char *str)
     return (i);
 }
 
-int	is_line_empty(char *str)
+void    ft_putstr(char *str)
 {
-	int	i;
-	int	is_empty;
+    int i;
 
-	i = 0;
-	is_empty = 1;
-	while (str[i] != 10)
-	{
-		if (str[i] != 32)
-			is_empty = 0;
-		i++;
-	}
-	if (i == 0)
-		return (1);
-	if (is_empty == 1)
-		return (i + 1);
-	else
-		return (0);
+    i = 0;
+    while (str[i])
+    {
+        ft_putchar(str[i]);
+        i++;
+    }
 }
 
-char *trim_lines(char *str)
+int	main(void)
 {
-	int		i;
-	int		spaces;
-	char	*no_empty;
+	fill_keys();
+//	printf("%s\n", dict.strs[4]);
+	char *dictionary = "0: zero\n 1: one\n2: two\n3: three\n4: four\n5: five\n6: six\n7: seven TEST TEST \n8: eight\n9: nine\n10: ten\n11: eleven\n12: twelve\n13: thirteen\n14: fourteen\n15: fifteen\n16: sixteen\n17: seventeen\n18: eighteen\n19: nineteen\n20: twenty\n30: thirty\n40: forty\n50: fifty\n60: sixty\n70: seventy\n80: eighty\n90: ninety\n100: hundred\n1000: thousand\n1000000: million\n1000000000: billion\n";
 
-	i = -1;
-	spaces = 0;
-	while (str[++i])
+
+	parse_entries(dictionary);
+	for (int i = 0; i < 32; i++)
+		printf("dict.entry #%d = '%s'\n", i, dict.strs[i]);
+}
+
+void	fill_keys(void)
+{
+	int i = 0;
+	while (i < 20)
 	{
-		while (str[i] == 10 && is_line_empty(&str[i + 1]))
-		{	
-			spaces += is_line_empty(&str[i + 1]);
-			i++;
+		dict.keys[i] = i;
+		i++;
+	}
+	while (i < 29)
+	{
+		dict.keys[i] = (i - 18) * 10;
+		i++;
+	}
+	dict.keys[29] = 1000;
+	dict.keys[30] = 1000000;
+	dict.keys[31] = 1000000000;
+//	for (int i = 0; i < 32; i++)
+	//	printf("entry #%d: '%d'\n", i, dict.keys[i]);
+}
+
+void	fill_number(int nb, char *str)
+{
+	int	i;
+	
+	i = 0;
+	while (i < 32)
+	{
+		if (nb == 0)
+		{
+	//		dict.strs[i] = (char *)malloc(5 * sizeof(char));
+	//		ft_strcpy (dict.strs[i], "zero");
+			dict.strs[i] = (char *)malloc((ft_strlen(str + 1)) * sizeof(char));
+			ft_strcpy (dict.strs[i], str);
+			return ;
 		}
-	}
-	no_empty = (char *)malloc((ft_strlen(str) - spaces + 1) * sizeof(char));
-	i = -1;
-	spaces = 0;
-	while (str[++i + spaces])
-	{
-		while (str[i] == 10 && is_line_empty(&str[i + spaces + 1]))
-			spaces += is_line_empty(&str[i + spaces + 1]);
-		no_empty[i] = str[i + spaces];
-	}
-	return (no_empty);
-}
-
-/*
-char	*trim_lines(char *str)
-{
-	int		i;
-	int		j;
-	int		spaces;
-	char	*no_empty;
-
-	i = -1;
-	spaces = 0;
-	while (str[i])
-	{
-		j = -1;
-		if (str[i] == 10 && (str[i + 1] == 10 || str[i + 1] == 32))
-			while (str[i + ++j] == 32 || str[i + j] == 10)
-				if (str[i + j] == 10)
-					spaces += j;
-	}
-	no_empty = (char*)malloc((ft_strlen(str) - spaces + 1) * sizeof(char));
-	i = -1;
-	spaces = 0;
-	while (str[++i + spaces])
-	{
-		j = -1;
-		if (str[i] == 10 && (str[i + 1] == 10 || str[i + 1] == 32))
-			while (str[i + ++j] == 32 || str[i + j] == 10)
-				if (str[i + j] == 10)
-					spaces += j;
-		no_empty[i] = str[i + spaces];
-	}
-	no_empty[i] = 0;
-	return (no_empty);
-}
-
-char	*trim_spaces(char *str)
-{
-	int		i;
-	int		j;
-	int		spaces;
-	char	*no_spaces;
-
-	i = -1;
-	spaces = 0;
-	while (str[++i] && str[i] != 10)
-		while (str[++i] == 32 && str[i + 1] == 32)
-			spaces++;
-	no_spaces = (char *)malloc(is_string_valid(str) - spaces + 1);
-	i = 0;
-	j = 0;
-	while (str[i] && str[i] != 10)
-	{
-		while (str[i] == 32 && str[i + 1] == 32)
-			i++;
-		no_spaces[j] = str[i];
+		if (nb == dict.keys[i])
+		{
+			dict.strs[i] = (char *)malloc((ft_strlen(str + 1)) * sizeof(char));
+			ft_strcpy (dict.strs[i], str);
+			return ;
+		}
 		i++;
-		j++;
 	}
-	no_spaces[j] = 0;
-	return (no_spaces);
 }
 
-int	get_key(char **str)
+void	parse_entries(char *str)
 {
-	int	i;
-	int	value;
-	int	sign;
-
-	sign = 1;
-	i = 0;
-	value = 0;
-	while (**str == 32)
-		*str += 1;
-	if (**str == '-' || **str == '+')
+	int 	key;
+	int		str_size;
+	char	*entry;
+	
+	while (str)
 	{
-		if (**str == '-')
-			sign *= -1;
-		*str += 1;
+		key = get_key(&str);
+	//		printf("The number of the entry is: '%d'\n", key);
+		str_size = is_string_valid(str);
+		entry = (char *)malloc((str_size + 1) * sizeof(char));
+		entry = get_string(&str);
+		entry[str_size] = 0;
+	//		printf("The string associated is: '%s'\n\n",entry);
+		if (key == 0)
+			printf("entry for zero = %s\n", entry);
+		fill_number(key, entry);
+		if (*(str + 3) == 0)
+			return ;
 	}
-	while (**str >= '0' && **str <= '9')
-	{
-		value = value * 10 + **str - '0';
-		*str += 1;
-	}
-	while (**str == 32)
-		*str += 1;
-	*str += 1;
-	return (value);
-}
-
-char	*get_string(char **str)
-{
-	int		size;
-	char	*cpy;
-
-	size = 0;
-	while ((**str) == 32)
-		*str += 1;
-	cpy = trim_spaces(*str);
-	while (**str != 10)
-		*str += 1;
-	*str += 1;
-	return (cpy);
-}
-*/
-int	main()
-{
-//	char	*str1 = "54  : ";
-//	char	*str2 = "-54  : ";
-//	char	*str3 = "+54  : ";
-//	char	*str4 = "+5 4   :";
-//	char	*str5 = "tes    t!@*\n";
-	char	*str6 = "1:   TEST     1\n\n\n\n\n\n     \n 222  :  TEST2\n245:str!#$@ % * @    #$%ingtesti\n32:test\n";
-//	int		*value_ptr = 0;
-//	int i = 0;
-//	int	numbers[10] = 0;
-
-	printf("The str is '%s'\nAfter trimming:'%s'\n", str6, trim_lines(str6));
 }

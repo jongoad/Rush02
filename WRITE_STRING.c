@@ -50,35 +50,30 @@ void    write_output(char **output, unsigned int key)
 //Function to write triplets
 void	write_triplets(int nb)
 {
-    // Need to pass in the digits from out triplet one at time
-    //First one is triplet_value div 100
-    //Second one is result of first div 10
-    //Third is result of second mod 10
-	int	tens;
-	
-	tens = (nb % 100) / 10;
+	tens = (nb % 100) - nb % 10;
 	if (nb / 100)
 	{
 		pull_string(nb/100);
 		ft_putchar(' ');
 		pull_string(100);
 	}
-	if (tens < 21 && nb % 100 != 0)
+	if (nb % 100 < 21 && nb % 100 > 0)
 	{
 		ft_putchar(' ');
 		pull_string(nb % 100);
 		return ;
 	}
-	else if (tens)
+	else if (nb % 100 > 0)
 	{
 		ft_putchar(' ');
-		pull_string(tens);
+		pull_string(nb % 100 - nb % 10);
 	}
 	if (nb % 10)
 	{
 		ft_putchar(' ');
-		pull_string(units);
+		pull_string(nb % 10);
 	}
+	return (nb);
 }
 
 //Function to iterate through triplet array and call for prints based on order of magnitude

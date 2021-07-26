@@ -11,7 +11,7 @@
 #include "FT_BASIC.c"
 int	check_dict(char *str);
 
-//Need a struct to start passing information around
+//STRUCTS
 struct data {
 
     char file_path[4096];
@@ -20,6 +20,13 @@ struct data {
     unsigned int mag;
     char *dict_input;
 } info;
+
+struct	s_entries
+{
+	int		size;
+	int 	keys[32];
+	char	*strs[32];
+} dict;
 
 
 /***************************************************************************************************/
@@ -347,12 +354,208 @@ int	check_dict(char *str)
 
 
 /***************************************************************************************************/
+/*                                   FORMAT STRING BEFORE SPLITTING                                */
+/***************************************************************************************************/
+
+int	is_line_empty(char *str)
+{
+	int	i;
+	int	is_empty;
+
+	i = 0;
+	is_empty = 1;
+	while (str[i] != 10)
+	{
+		if (str[i] != 32)
+			is_empty = 0;
+		i++;
+	}
+	if (i == 0)
+		return (1);
+	if (is_empty == 1)
+		return (i + 1);
+	else
+		return (0);
+}
+
+char *trim_lines(char *str)
+{
+	int		i;
+	int		spaces;
+	char	*no_empty;
+
+	i = -1;
+	spaces = 0;
+	while (str[++i])
+	{
+		while (str[i] == 10 && is_line_empty(&str[i + 1]))
+		{	
+			spaces += is_line_empty(&str[i + 1]);
+			i++;
+		}
+	}
+	no_empty = (char *)malloc((ft_strlen(str) - spaces + 1) * sizeof(char));
+	i = -1;
+	spaces = 0;
+	while (str[++i + spaces])
+	{
+		while (str[i] == 10 && is_line_empty(&str[i + spaces + 1]))
+			spaces += is_line_empty(&str[i + spaces + 1]);
+		no_empty[i] = str[i + spaces];
+	}
+	return (no_empty);
+}
+
+char	*trim_spaces(char *str)
+{
+	int		i;
+	int		j;
+	int		spaces;
+	char	*no_spaces;
+
+	i = -1;
+	spaces = 0;
+	while (str[++i] && str[i] != 10)
+		while (str[++i] == 32 && str[i + 1] == 32)
+			spaces++;
+	no_spaces = (char *)malloc(is_string_valid(str) - spaces + 1);
+	i = 0;
+	j = 0;
+	while (str[i] && str[i] != 10)
+	{
+		while (str[i] == 32 && str[i + 1] == 32)
+			i++;
+		no_spaces[j] = str[i];
+		i++;
+		j++;
+	}
+	no_spaces[j] = 0;
+	return (no_spaces);
+}
+
+int	get_key(char **str)
+{
+	int	i;
+	int	value;
+	int	sign;
+
+	sign = 1;
+	i = 0;
+	value = 0;
+	while (**str == 32)
+		*str += 1;
+	if (**str == '-' || **str == '+')
+	{
+		if (**str == '-')
+			sign *= -1;
+		*str += 1;
+	}
+	while (**str >= '0' && **str <= '9')
+	{
+		value = value * 10 + **str - '0';
+		*str += 1;
+	}
+	while (**str == 32)
+		*str += 1;
+	*str += 1;
+	return (value);
+}
+
+char	*get_string(char **str)
+{
+	int		size;
+	char	*cpy;
+
+	size = 0;
+	while ((**str) == 32)
+		*str += 1;
+	cpy = trim_spaces(*str);
+	while (**str != 10)
+		*str += 1;
+	*str += 1;
+	return (cpy);
+}
+
+/***************************************************************************************************/
+/*                                  GRAB STRINGS VIA KEYS AND STORE                                */
+/***************************************************************************************************/
+
+void	fill_keys(void)
+{
+	int i = 0;
+	while (i < 20)
+	{
+		dict.keys[i] = i;
+		i++;
+	}
+	while (i < 29)
+	{
+		dict.keys[i] = (i - 18) * 10;
+		i++;
+	}
+	dict.keys[29] = 1000;
+	dict.keys[30] = 1000000;
+	dict.keys[31] = 1000000000;
+//	for (int i = 0; i < 32; i++)
+	//	printf("entry #%d: '%d'\n", i, dict.keys[i]);
+}
+
+void	fill_number(int nb, char *str)
+{
+	int	i;
+	
+	i = 0;
+	while (i < 32)
+	{
+		if (nb == 0)
+		{
+	//		dict.strs[i] = (char *)malloc(5 * sizeof(char));
+	//		ft_strcpy (dict.strs[i], "zero");
+			dict.strs[i] = (char *)malloc((ft_strlen(str + 1)) * sizeof(char));
+			ft_strcpy (dict.strs[i], str);
+			return ;
+		}
+		if (nb == dict.keys[i])
+		{
+			dict.strs[i] = (char *)malloc((ft_strlen(str + 1)) * sizeof(char));
+			ft_strcpy (dict.strs[i], str);
+			return ;
+		}
+		i++;
+	}
+}
+
+void	parse_entries(char *str)
+{
+	int 	key;
+	int		str_size;
+	char	*entry;
+	
+	while (str)
+	{
+		key = get_key(&str);
+	//		printf("The number of the entry is: '%d'\n", key);
+		str_size = is_string_valid(str);
+		entry = (char *)malloc((str_size + 1) * sizeof(char));
+		entry = get_string(&str);
+		entry[str_size] = 0;
+	//		printf("The string associated is: '%s'\n\n",entry);
+		if (key == 0)
+			printf("entry for zero = %s\n", entry);
+		fill_number(key, entry);
+		if (*(str + 3) == 0)
+			return ;
+	}
+}
+
+
+/***************************************************************************************************/
 /*                                   CONTROL PRINTS CALLS                                          */
 /***************************************************************************************************/
 
 
 //Function to iterate through triplet array and call for prints based on order of magnitude
-/*
+
 void    control_print(void)
 {
     int i;
@@ -367,7 +570,8 @@ void    control_print(void)
         write_triplets(triplet_value);
         if (local_mag != 1)
             {
-                ft_putstr(pull_string(local_mag));
+                ft_putchar(' ');
+                pull_string(local_mag);
                 ft_putchar(' ');
                 local_mag = (local_mag / 1000);
             }
@@ -377,7 +581,7 @@ void    control_print(void)
     }
     return;
 }
-*/
+
 
 
 //If there is an error, arg_check will return -1
@@ -389,10 +593,12 @@ int main(int argc, char **argv)
     int error_status;
     int dict_error;
   
+    /***************************************************************************************************/
     arg_status = arg_check(argc, argv);
     error_status = file_to_string();
     dict_error = confirm_valid_dict();
     info.dict_input = remove_empty_lines(info.dict_input);
+    /*
     if (dict_error == 0)
         printf("Dict Error\n");
     else if (arg_status == -1)
@@ -401,8 +607,16 @@ int main(int argc, char **argv)
         printf("Valid number: %u\n", info.nbr);
     else if(arg_status == 1)
         printf("Valid number: %u\nReference dictionary path is now: %s\n", info.nbr, info.file_path);
-    printf("Here is the current dictionary:\n %s", info.dict_input);
+    printf("Here is the current dictionary:\n %s", info.dict_input); */
     control_triplets();
 
+    /***************************************************************************************************/
+
+    fill_keys();
+	//char *dictionary = "0: zero\n 1: one\n2: two\n3: three\n4: four\n5: five\n6: six\n7: seven TEST TEST \n8: eight\n9: nine\n10: ten\n11: eleven\n12: twelve\n13: thirteen\n14: fourteen\n15: fifteen\n16: sixteen\n17: seventeen\n18: eighteen\n19: nineteen\n20: twenty\n30: thirty\n40: forty\n50: fifty\n60: sixty\n70: seventy\n80: eighty\n90: ninety\n100: hundred\n1000: thousand\n1000000: million\n1000000000: billion\n";
+
+	parse_entries(info.dict_input);
+	for (int i = 0; i < 32; i++)
+		printf("dict.entry #%d = '%s'\n", i, dict.strs[i]);
     return (0);
 }

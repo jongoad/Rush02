@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 
 int	is_key_valid(char *str)
@@ -41,10 +42,7 @@ int	is_line_valid(char *str)
 {
 	int	i;
 
-	i = -1;
-	while (str[++i] == 32 || str[i] == 10)
-		if (str[i] == 10)
-			return (i + 1);
+	i = 0;
 	if (is_key_valid(&str[i]) == 0)
 		return (0);
 	else

@@ -45,7 +45,7 @@ void	control_triplets(void)
 	int	i;
 
 	i = 0;
-	info.mag = get_magnitude(info.nbr);
+	info.mag = (unsigned int)get_magnitude(info.nbr);
 	convert_triplets(info.nbr, info.mag, info.triplets);
 	return ;
 }

@@ -14,14 +14,14 @@ int	check_dict(char *str);
 //STRUCTS
 struct data {
 
-    char file_path[4096];
-    unsigned int    nbr;
-    int triplets[4];
-    unsigned int mag;
-    char *dict_input;
-    char *temp_str;
-    char *no_spaces;
-    char *entry;
+	char file_path[4096];
+	unsigned int    nbr;
+	int triplets[4];
+	unsigned int mag;
+	char *dict_input;
+	char *temp_str;
+	char *no_spaces;
+	char *entry;
 } info;
 
 struct	s_entries
@@ -39,103 +39,103 @@ struct	s_entries
 // Function to find the size of the file so we can malloc the correct size memory block.
 int get_file_size(void)
 {
-    int count; //File size counter
-    int fd; //File descriptor
-    int status; //Loop control using return value from read, also failure status of whole function
-    char    *c; //Temporary buffer to hold read bytes in local memory
+	int count; //File size counter
+	int fd; //File descriptor
+	int status; //Loop control using return value from read, also failure status of whole function
+	char    *c; //Temporary buffer to hold read bytes in local memory
 
-    count = 0;
-    status = 1;
+	count = 0;
+	status = 1;
 
-    //Create the memory location for buffer
-    c = (char *)malloc(sizeof(char) + 1);
+	//Create the memory location for buffer
+	c = (char *)malloc(sizeof(char) + 1);
 
-    //Open the file
-    fd = open(info.file_path, O_RDONLY);
-    //Read one byte at a time till we hit the EOF char or return an error
-    while (status > 0 && fd != -1)
-    {
-        status = read(fd, c, 1);
-        if (status > 0)
-            count++;
-    }
-    
-    //Free the allocated memory
-    free(c);
+	//Open the file
+	fd = open(info.file_path, O_RDONLY);
+	//Read one byte at a time till we hit the EOF char or return an error
+	while (status > 0 && fd != -1)
+	{
+		status = read(fd, c, 1);
+		if (status > 0)
+			count++;
+	}
+	
+	//Free the allocated memory
+	free(c);
 
-    //Close the file
-    status = close(fd);
-    //Return error or size of file
-    if (status == -1 || fd == -1)
-        return (-1);
-    else
-        return (count);
+	//Close the file
+	status = close(fd);
+	//Return error or size of file
+	if (status == -1 || fd == -1)
+		return (-1);
+	else
+		return (count);
 }
 
 //Function to read the file and store it in a malloc-ed char array
 int file_to_string(void)
 {
    //Create an int that will hold the file descriptor
-    int fd;
-    int status;
-    int size;
+	int fd;
+	int status;
+	int size;
 
-    status = 1;
+	status = 1;
 
-    //Allocate a memory block large enough to hold read output, including an extra byte for null terminator.
-    size = get_file_size();
-    info.dict_input = (char *)malloc(sizeof(char) * (size + 1));
+	//Allocate a memory block large enough to hold read output, including an extra byte for null terminator.
+	size = get_file_size();
+	info.dict_input = (char *)malloc(sizeof(char) * (size + 1));
 
-    //Open the file
-    fd = open(info.file_path, O_RDONLY);
+	//Open the file
+	fd = open(info.file_path, O_RDONLY);
 
-    //Read size bytes from the file to our string.
-    //Returns above 0 are the number of bytes read
-    status = read(fd, info.dict_input, size);
+	//Read size bytes from the file to our string.
+	//Returns above 0 are the number of bytes read
+	status = read(fd, info.dict_input, size);
    
-    //Null terminate the string at last byte
-    info.dict_input[size] = '\0';
+	//Null terminate the string at last byte
+	info.dict_input[size] = '\0';
 
-    //Close the file
-    status = close(fd);
-    //Need to handle error reporting. We can return a null string on error. Might need to split open and close into seperate functions that return fd
-    if (status == -1 || fd == -1)
-       return (-1);
+	//Close the file
+	status = close(fd);
+	//Need to handle error reporting. We can return a null string on error. Might need to split open and close into seperate functions that return fd
+	if (status == -1 || fd == -1)
+	   return (-1);
    else
-        return (1);
+		return (1);
 }
 
 //This function is to strip away any entire empty lines
 char *remove_empty_lines(char *str)
 {
-    int i;
-    int j;
-    //char *temp_str;
-    int size;
-    int found_line;
+	int i;
+	int j;
+	//char *temp_str;
+	int size;
+	int found_line;
 
-    size = get_file_size();
-    info.temp_str = (char *)malloc(sizeof(char) * (size + 1));
-    found_line = 0;
-    i = 0;
-    while (str[i] != '\0')
-    {
-        j = 0;
-        info.temp_str[i] = str[i + found_line];
-        //While consecutive white space, if we hit the newline char we need to start copying again from new location
-        while(str[i + j + found_line] == ' ')
-        {
-            j++;
-        }
-        if (str[i + j + found_line] == '\n')
-        {
-            if (str[i + j + found_line + 1] == '\n')
-                str[i + j + found_line + 1] = ' ';
-            found_line = j + found_line;
-        }
-        i++;
-    }
-    return (info.temp_str);
+	size = get_file_size();
+	info.temp_str = (char *)malloc(sizeof(char) * (size + 1));
+	found_line = 0;
+	i = 0;
+	while (str[i] != '\0')
+	{
+		j = 0;
+		info.temp_str[i] = str[i + found_line];
+		//While consecutive white space, if we hit the newline char we need to start copying again from new location
+		while(str[i + j + found_line] == ' ')
+		{
+			j++;
+		}
+		if (str[i + j + found_line] == '\n')
+		{
+			if (str[i + j + found_line + 1] == '\n')
+				str[i + j + found_line + 1] = ' ';
+			found_line = j + found_line;
+		}
+		i++;
+	}
+	return (info.temp_str);
 }
 
 
@@ -146,61 +146,61 @@ char *remove_empty_lines(char *str)
 //This function converts the string passed to an integer.
 int   is_valid_atoi(char *argv)
 {
-    unsigned long   nbr;
-    int i;
+	unsigned long   nbr;
+	int i;
 
-    i = 0;
-    nbr = 0;
-    while (argv[i] >= '0' && argv[i] <= '9')
-    {
-        nbr = (nbr * 10) + (argv[i] - '0');
-        i++;
-        //If number is larger then maximum size of unsigned int return error
-        if (nbr > 4294967295)
-            return (-1);
-    }
-    //If first char of the number array is not a number, or the last char checked is not the null char we can return an error
-    if (argv[0] < '0' || argv[0] > '9' || argv[i] != '\0')
-        return (-1);
-    //If number is valid set info.nbr and return 1
-    else
-    {
-        info.nbr = nbr;
-        return (1);
-    }
+	i = 0;
+	nbr = 0;
+	while (argv[i] >= '0' && argv[i] <= '9')
+	{
+		nbr = (nbr * 10) + (argv[i] - '0');
+		i++;
+		//If number is larger then maximum size of unsigned int return error
+		if (nbr > 4294967295)
+			return (-1);
+	}
+	//If first char of the number array is not a number, or the last char checked is not the null char we can return an error
+	if (argv[0] < '0' || argv[0] > '9' || argv[i] != '\0')
+		return (-1);
+	//If number is valid set info.nbr and return 1
+	else
+	{
+		info.nbr = nbr;
+		return (1);
+	}
 }
 
 //This function checks the command line input, and checks for a new dictionary being passed
 int arg_check(int argc,char **argv)
 {
-    int nbr_check;
+	int nbr_check;
 
-    //If 2 arguments are passed we need to check number and dict
-    //The path for the new dict is passed into the info struct
-    if (argc == 3)
-    {
-        nbr_check = is_valid_atoi(argv[2]);
-        ft_strcpy(info.file_path, argv[1]);
-    }
-    //If only one argument is passed we simply check the number and the original dict
-    else if (argc == 2)
-    {
-        nbr_check = is_valid_atoi(argv[1]);
-        ft_strcpy(info.file_path, "numbers.dict");
-    }
-    //If there is no number or dict passed we return an error
-    else if (argc == 1)
-        return (-1);
-    return (nbr_check);
+	//If 2 arguments are passed we need to check number and dict
+	//The path for the new dict is passed into the info struct
+	if (argc == 3)
+	{
+		nbr_check = is_valid_atoi(argv[2]);
+		ft_strcpy(info.file_path, argv[1]);
+	}
+	//If only one argument is passed we simply check the number and the original dict
+	else if (argc == 2)
+	{
+		nbr_check = is_valid_atoi(argv[1]);
+		ft_strcpy(info.file_path, "numbers.dict");
+	}
+	//If there is no number or dict passed we return an error
+	else if (argc == 1)
+		return (-1);
+	return (nbr_check);
 }
 
 //This function checks that the current dictionary is valid
 int confirm_valid_dict(void)
 {
-    int dict_check;
+	int dict_check;
 
-    dict_check = check_dict(info.dict_input);
-    return (dict_check);
+	dict_check = check_dict(info.dict_input);
+	return (dict_check);
 }
 
 /***************************************************************************************************/
@@ -210,64 +210,64 @@ int confirm_valid_dict(void)
 //Function to get magnitude total of number
 unsigned int    get_magnitude(unsigned int nbr)
 {
-    unsigned int    mag;
+	unsigned int    mag;
 
-    mag = 1;
-    if (nbr < 1000)
-    {
-        mag = 1;
-        return (mag);
-    }
-    while (nbr > 999)
-    {
-        mag = mag * 1000;
-        nbr = nbr / 1000;
-    }
-    return (mag);
+	mag = 1;
+	if (nbr < 1000)
+	{
+		mag = 1;
+		return (mag);
+	}
+	while (nbr > 999)
+	{
+		mag = mag * 1000;
+		nbr = nbr / 1000;
+	}
+	return (mag);
 }
 
 //Function to convert the number into triplets and write to an array
 void    convert_triplets(unsigned int  nbr, unsigned int   mag, int *triplets)
 {
-    int i;
-    unsigned int    nbr_store;
+	int i;
+	unsigned int    nbr_store;
 
-    nbr_store = nbr;
-    i = 0;
-    while (mag >= 1)
-    {
-        if (nbr_store < 1000)
-            {
-                triplets[i] =  (nbr / mag);
-                return;
-            }
-        else 
-            triplets[i] = (nbr / mag);
-        nbr = (nbr % mag);
-        mag = mag / 1000;
-        triplets++;
-    }
+	nbr_store = nbr;
+	i = 0;
+	while (mag >= 1)
+	{
+		if (nbr_store < 1000)
+			{
+				triplets[i] =  (nbr / mag);
+				return;
+			}
+		else 
+			triplets[i] = (nbr / mag);
+		nbr = (nbr % mag);
+		mag = mag / 1000;
+		triplets++;
+	}
 }
 
 //Driver function for triplets and magnitude
 void    control_triplets(void)
 {
-    int i;
+	int i;
 
-    i = 0;
+	i = 0;
 
-    info.mag = get_magnitude(info.nbr);
-    convert_triplets(info.nbr, info.mag, info.triplets);
+	info.mag = get_magnitude(info.nbr);
+	convert_triplets(info.nbr, info.mag, info.triplets);
 
-    //FOR TESTING -- TO BE REMOVED
-    printf("mag is %u\n", info.mag);
-    
-    while (i < 4)
-    {
-         printf("Value of triplet %d is: %d\n", i + 1, info.triplets[i]);
-         i++;
-    }
-    return;
+	//FOR TESTING -- TO BE REMOVED
+	printf("mag is %u\n", info.mag);
+	
+	while (i < 4)
+	{
+		 printf("Value of triplet %d is: %d\n", i + 1, info.triplets[i]);
+		 i++;
+	}
+	return;
 }
 
 
@@ -572,29 +572,30 @@ int	write_triplets(int nb)
 //Function to iterate through triplet array and call for prints based on order of magnitude
 void    control_print(void)
 {
-    int i;
-    int triplet_value;
-    unsigned int local_mag;
-    int no_print;
+	int i;
+	int triplet_value;
+	unsigned int local_mag;
+	int no_print;
 
-    i = 0;
-    local_mag = info.mag;
-    while (i < 4 && info.mag != 0)
-    {
-        triplet_value = info.triplets[i];
-        no_print = write_triplets(triplet_value);
-        if (local_mag != 1 && no_print != 0)
-            {
-                ft_putchar(' ');
-                pull_string(local_mag);
-                ft_putchar(' ');
-            }
-        else if (local_mag == 1)
-            break;
-        local_mag = (local_mag / 1000);
-        i++;
-    }
-    return;
+	i = 0;
+	local_mag = info.mag;
+	while (i < 4 && info.mag != 0)
+	{
+		triplet_value = info.triplets[i];
+		no_print = write_triplets(triplet_value);
+		if (local_mag != 1 && no_print != 0)
+			{
+				ft_putchar(' ');
+				pull_string(local_mag);
+				ft_putchar(' ');
+			}
+		else if (local_mag == 1)
+			break;
+		local_mag = (local_mag / 1000);
+		i++;
+	}
+	ft_putchar(10);
+	return;
 }
 
 /***************************************************************************************************/
@@ -603,11 +604,8 @@ void    control_print(void)
 
 void    free_memory(void)
 {
-    free(info.dict_input);
-    //free(info.temp_str);
-    free(info.no_spaces);
-    //free(dict.strs);
-    //free(info.entry);
+	free(info.dict_input);
+	free(info.no_spaces);
 }
 
 
@@ -616,39 +614,31 @@ void    free_memory(void)
 /*                                  MAIN FUNCTION                                                  */
 /***************************************************************************************************/
 
-
-
-//If there is an error, arg_check will return -1
-//If the number is valid and there is only one argument, it will return 0
-//If the number is valid and there are 2 arguments, it will return 1
 int main(int argc, char **argv)
 {
-    int arg_status;
-    int error_status;
-    int dict_error;
+	int arg_status;
+	int error_status;
+	int dict_error;
   
-    /***************************************************************************************************/
-    arg_status = arg_check(argc, argv);
-    error_status = file_to_string();
-    dict_error = confirm_valid_dict();
-    info.dict_input = remove_empty_lines(info.dict_input);
-    
-    if (dict_error == 0)
-        printf("Dict Error\n");
-    else if (arg_status == -1)
-        printf("Error\n");
-
-   // printf("Here is the current dictionary:\n %s", info.dict_input);
-    control_triplets();
-
-    /***************************************************************************************************/
-
-    fill_keys();
+	arg_status = arg_check(argc, argv);
+	error_status = file_to_string();
+	dict_error = confirm_valid_dict();
+	info.dict_input = remove_empty_lines(info.dict_input);
 	
+	if (dict_error == 0)
+	{
+		printf("Dict Error\n");
+		return (0);
+	}
+	else if (arg_status == -1)
+	{
+		printf("Error\n");
+		return (0);
+	}
+	control_triplets();
+	fill_keys();
 	parse_entries(info.dict_input);
-
-    control_print();
-    free_memory();
-
-    return (0);
+	control_print();
+	free_memory();
+	return (0);
 }

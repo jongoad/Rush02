@@ -550,12 +550,61 @@ void	parse_entries(char *str)
 
 
 /***************************************************************************************************/
-/*                                   CONTROL PRINTS CALLS                                          */
+/*                                  GET STRING TO PRINT AND CALL PRINT                             */
 /***************************************************************************************************/
 
+//Function to find keys and return strings
+void	pull_string(int key)
+{
+	int	i;
+
+	i = 0;
+	while (i < 32)
+	{
+		if (key == dict.keys[i])
+		{
+			ft_putstr(dict.strs[i]);
+			return ;
+		}
+		i++;	
+	}
+}
+
+//Function to write triplets
+void	write_triplets(int nb)
+{
+    // Need to pass in the digits from out triplet one at time
+    //First one is triplet_value div 100
+    //Second one is result of first div 10
+    //Third is result of second mod 10
+	int	tens;
+	
+	tens = (nb % 100) / 10;
+	if (nb / 100)
+	{
+		pull_string(nb/100);
+		ft_putchar(' ');
+		pull_string(100);
+	}
+	if (tens < 21 && nb % 100 != 0)
+	{
+		ft_putchar(' ');
+		pull_string(nb % 100);
+		return ;
+	}
+	else if (tens)
+	{
+		ft_putchar(' ');
+		pull_string(tens);
+	}
+	if (nb % 10)
+	{
+		ft_putchar(' ');
+		pull_string(nb % 10);
+	}
+}
 
 //Function to iterate through triplet array and call for prints based on order of magnitude
-
 void    control_print(void)
 {
     int i;
@@ -584,6 +633,12 @@ void    control_print(void)
 
 
 
+/***************************************************************************************************/
+/*                                  MAIN FUNCTION                                                  */
+/***************************************************************************************************/
+
+
+
 //If there is an error, arg_check will return -1
 //If the number is valid and there is only one argument, it will return 0
 //If the number is valid and there are 2 arguments, it will return 1
@@ -598,25 +653,21 @@ int main(int argc, char **argv)
     error_status = file_to_string();
     dict_error = confirm_valid_dict();
     info.dict_input = remove_empty_lines(info.dict_input);
-    /*
+    
     if (dict_error == 0)
         printf("Dict Error\n");
     else if (arg_status == -1)
         printf("Error\n");
-    else if (arg_status == 0)
-        printf("Valid number: %u\n", info.nbr);
-    else if(arg_status == 1)
-        printf("Valid number: %u\nReference dictionary path is now: %s\n", info.nbr, info.file_path);
-    printf("Here is the current dictionary:\n %s", info.dict_input); */
+
+   // printf("Here is the current dictionary:\n %s", info.dict_input);
     control_triplets();
 
     /***************************************************************************************************/
 
     fill_keys();
-	//char *dictionary = "0: zero\n 1: one\n2: two\n3: three\n4: four\n5: five\n6: six\n7: seven TEST TEST \n8: eight\n9: nine\n10: ten\n11: eleven\n12: twelve\n13: thirteen\n14: fourteen\n15: fifteen\n16: sixteen\n17: seventeen\n18: eighteen\n19: nineteen\n20: twenty\n30: thirty\n40: forty\n50: fifty\n60: sixty\n70: seventy\n80: eighty\n90: ninety\n100: hundred\n1000: thousand\n1000000: million\n1000000000: billion\n";
-
+	
 	parse_entries(info.dict_input);
-	for (int i = 0; i < 32; i++)
-		printf("dict.entry #%d = '%s'\n", i, dict.strs[i]);
+
+    control_print();
     return (0);
 }

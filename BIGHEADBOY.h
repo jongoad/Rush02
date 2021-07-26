@@ -58,7 +58,9 @@ void	fill_keys(void);
 void	fill_number(int nb, char *str);
 void	parse_entries(char *str);
 
-
+void	pull_string(int key);
+void	write_triplets(int nb);
+void    control_print(void);
 
 
 

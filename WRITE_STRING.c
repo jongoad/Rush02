@@ -48,9 +48,8 @@ void    write_output(char **output, unsigned int key)
 
 
 //Function to write triplets
-void	write_triplets(int nb)
+int	write_triplets(int nb)
 {
-	tens = (nb % 100) - nb % 10;
 	if (nb / 100)
 	{
 		pull_string(nb/100);
@@ -61,7 +60,7 @@ void	write_triplets(int nb)
 	{
 		ft_putchar(' ');
 		pull_string(nb % 100);
-		return ;
+		return (nb);
 	}
 	else if (nb % 100 > 0)
 	{

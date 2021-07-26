@@ -1,6 +1,7 @@
 /***************************************************************************************************/
 /*          CHECK COMMAND LINE INPUT, GET PROPER DICTIONARY, CONVERT INPUT NUMBER TO INT           */
 /***************************************************************************************************/
+#include <BIGHEADBOY.h>
 
 //This function converts the string passed to an integer.
 int   is_valid_atoi(char *argv)

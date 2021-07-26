@@ -3,21 +3,26 @@
 
 
 # include <unistd.h>
-# include <fcntl.h>
-# include <sys/types.h>
-# include <sys/uio.h>
-# include <sys/errno.h>
-# include <stdio.h>
-# include <string.h>
 # include <stdlib.h>
 
 
-//CHECK THESE
-# define DICT_REF "resources/numbersEN.dict"
-# define ERROR "Error\n"
-# define DICT_ERROR "Dict Error\n"
-
 //STRUCTS HERE
+
+struct data {
+
+    char file_path[4096];
+    unsigned int    nbr;
+    int triplets[4];
+    unsigned int mag;
+    char *dict_input;
+} info;
+
+struct	s_entries
+{
+	int		size;
+	int 	keys[32];
+	char	*strs[32];
+} dict;
 
 
 
@@ -58,8 +63,8 @@ void	fill_keys(void);
 void	fill_number(int nb, char *str);
 void	parse_entries(char *str);
 
-void	pull_string(int key);
-void	write_triplets(int nb);
+void    pull_string(int key);
+int write_triplets(int nb);
 void    control_print(void);
 
 

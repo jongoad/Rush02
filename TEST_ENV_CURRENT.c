@@ -19,6 +19,9 @@ struct data {
     int triplets[4];
     unsigned int mag;
     char *dict_input;
+    char *temp_str;
+    char *no_spaces;
+    char *entry;
 } info;
 
 struct	s_entries
@@ -75,7 +78,6 @@ int file_to_string(void)
    //Create an int that will hold the file descriptor
     int fd;
     int status;
-    //char *str;
     int size;
 
     status = 1;
@@ -108,18 +110,18 @@ char *remove_empty_lines(char *str)
 {
     int i;
     int j;
-    char *temp_str;
+    //char *temp_str;
     int size;
     int found_line;
 
     size = get_file_size();
-    temp_str = (char *)malloc(sizeof(char) * (size + 1));
+    info.temp_str = (char *)malloc(sizeof(char) * (size + 1));
     found_line = 0;
     i = 0;
     while (str[i] != '\0')
     {
         j = 0;
-        temp_str[i] = str[i + found_line];
+        info.temp_str[i] = str[i + found_line];
         //While consecutive white space, if we hit the newline char we need to start copying again from new location
         while(str[i + j + found_line] == ' ')
         {
@@ -133,7 +135,7 @@ char *remove_empty_lines(char *str)
         }
         i++;
     }
-    return (temp_str);
+    return (info.temp_str);
 }
 
 
@@ -378,59 +380,30 @@ int	is_line_empty(char *str)
 		return (0);
 }
 
-char *trim_lines(char *str)
-{
-	int		i;
-	int		spaces;
-	char	*no_empty;
-
-	i = -1;
-	spaces = 0;
-	while (str[++i])
-	{
-		while (str[i] == 10 && is_line_empty(&str[i + 1]))
-		{	
-			spaces += is_line_empty(&str[i + 1]);
-			i++;
-		}
-	}
-	no_empty = (char *)malloc((ft_strlen(str) - spaces + 1) * sizeof(char));
-	i = -1;
-	spaces = 0;
-	while (str[++i + spaces])
-	{
-		while (str[i] == 10 && is_line_empty(&str[i + spaces + 1]))
-			spaces += is_line_empty(&str[i + spaces + 1]);
-		no_empty[i] = str[i + spaces];
-	}
-	return (no_empty);
-}
-
 char	*trim_spaces(char *str)
 {
 	int		i;
 	int		j;
 	int		spaces;
-	char	*no_spaces;
 
 	i = -1;
 	spaces = 0;
 	while (str[++i] && str[i] != 10)
 		while (str[++i] == 32 && str[i + 1] == 32)
 			spaces++;
-	no_spaces = (char *)malloc(is_string_valid(str) - spaces + 1);
+	info.no_spaces = (char *)malloc(is_string_valid(str) - spaces + 1);
 	i = 0;
 	j = 0;
 	while (str[i] && str[i] != 10)
 	{
 		while (str[i] == 32 && str[i + 1] == 32)
 			i++;
-		no_spaces[j] = str[i];
+		info.no_spaces[j] = str[i];
 		i++;
 		j++;
 	}
-	no_spaces[j] = 0;
-	return (no_spaces);
+	info.no_spaces[j] = 0;
+	return (info.no_spaces);
 }
 
 int	get_key(char **str)
@@ -509,8 +482,6 @@ void	fill_number(int nb, char *str)
 	{
 		if (nb == 0)
 		{
-	//		dict.strs[i] = (char *)malloc(5 * sizeof(char));
-	//		ft_strcpy (dict.strs[i], "zero");
 			dict.strs[i] = (char *)malloc((ft_strlen(str + 1)) * sizeof(char));
 			ft_strcpy (dict.strs[i], str);
 			return ;
@@ -529,20 +500,20 @@ void	parse_entries(char *str)
 {
 	int 	key;
 	int		str_size;
-	char	*entry;
+	//char	*entry;
 	
 	while (str)
 	{
 		key = get_key(&str);
 	//		printf("The number of the entry is: '%d'\n", key);
 		str_size = is_string_valid(str);
-		entry = (char *)malloc((str_size + 1) * sizeof(char));
-		entry = get_string(&str);
-		entry[str_size] = 0;
+		info.entry = (char *)malloc((str_size + 1) * sizeof(char));
+		info.entry = get_string(&str);
+		info.entry[str_size] = 0;
 	//		printf("The string associated is: '%s'\n\n",entry);
 		if (key == 0)
-			printf("entry for zero = %s\n", entry);
-		fill_number(key, entry);
+			printf("entry for zero = %s\n", info.entry);
+		fill_number(key, info.entry);
 		if (*(str + 3) == 0)
 			return ;
 	}
@@ -571,37 +542,31 @@ void	pull_string(int key)
 }
 
 //Function to write triplets
-void	write_triplets(int nb)
+int	write_triplets(int nb)
 {
-    // Need to pass in the digits from out triplet one at time
-    //First one is triplet_value div 100
-    //Second one is result of first div 10
-    //Third is result of second mod 10
-	int	tens;
-	
-	tens = (nb % 100) / 10;
 	if (nb / 100)
 	{
 		pull_string(nb/100);
 		ft_putchar(' ');
 		pull_string(100);
 	}
-	if (tens < 21 && nb % 100 != 0)
+	if (nb % 100 < 21 && nb % 100 > 0)
 	{
 		ft_putchar(' ');
 		pull_string(nb % 100);
-		return ;
+		return (nb);
 	}
-	else if (tens)
+	else if (nb % 100 > 0)
 	{
 		ft_putchar(' ');
-		pull_string(tens);
+		pull_string(nb % 100 - nb % 10);
 	}
 	if (nb % 10)
 	{
 		ft_putchar(' ');
 		pull_string(nb % 10);
 	}
+	return (nb);
 }
 
 //Function to iterate through triplet array and call for prints based on order of magnitude
@@ -610,25 +575,39 @@ void    control_print(void)
     int i;
     int triplet_value;
     unsigned int local_mag;
+    int no_print;
 
     i = 0;
     local_mag = info.mag;
     while (i < 4 && info.mag != 0)
     {
         triplet_value = info.triplets[i];
-        write_triplets(triplet_value);
-        if (local_mag != 1)
+        no_print = write_triplets(triplet_value);
+        if (local_mag != 1 && no_print != 0)
             {
                 ft_putchar(' ');
                 pull_string(local_mag);
                 ft_putchar(' ');
-                local_mag = (local_mag / 1000);
             }
         else if (local_mag == 1)
             break;
+        local_mag = (local_mag / 1000);
         i++;
     }
     return;
+}
+
+/***************************************************************************************************/
+/*                                     FREE MEMORY                                                 */
+/***************************************************************************************************/
+
+void    free_memory(void)
+{
+    free(info.dict_input);
+    //free(info.temp_str);
+    free(info.no_spaces);
+    //free(dict.strs);
+    //free(info.entry);
 }
 
 
@@ -669,5 +648,7 @@ int main(int argc, char **argv)
 	parse_entries(info.dict_input);
 
     control_print();
+    free_memory();
+
     return (0);
 }
